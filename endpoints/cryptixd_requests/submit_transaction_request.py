@@ -105,8 +105,6 @@ async def submit_a_new_transaction(
         )
         tx_resp = tx_resp["submitTransactionResponse"]
 
-    tx_resp = tx_resp["submitTransactionResponse"]
-
     if "error" in tx_resp:
         return JSONResponse(
             status_code=400, content={"error": tx_resp["error"].get("message", "")}
