@@ -112,6 +112,15 @@ async def get_block(response: Response, blockId: str = Path(regex="[a-f0-9]{64}"
     if "transactions" not in requested_block or not requested_block["transactions"]:
         requested_block["transactions"] = await get_block_transactions(blockId)
 
+    # cryptixd's getBlock leaves verboseData.transactionIds empty even with
+    # includeTransactions=True, so backfill it from the block's transactions to
+    # stay consistent with /blocks-from-bluescore.
+    if not requested_block["verboseData"].get("transactionIds"):
+        requested_block["verboseData"]["transactionIds"] = [
+            tx["verboseData"]["transactionId"]
+            for tx in (requested_block["transactions"] or [])
+        ]
+
     if (
         int(requested_block["header"]["blueScore"])
         > current_blue_score_data["blue_score"] - 20
