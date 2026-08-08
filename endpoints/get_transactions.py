@@ -25,9 +25,9 @@ class TxOutput(BaseModel):
     transaction_id: str
     index: int
     amount: int
-    script_public_key: str
-    script_public_key_address: str
-    script_public_key_type: str
+    script_public_key: str | None
+    script_public_key_address: str | None
+    script_public_key_type: str | None
     accepting_block_hash: str | None
 
     class Config:
@@ -38,12 +38,12 @@ class TxInput(BaseModel):
     id: int
     transaction_id: str
     index: int
-    previous_outpoint_hash: str
+    previous_outpoint_hash: str | None
     previous_outpoint_index: str
     previous_outpoint_resolved: TxOutput | None
     previous_outpoint_address: str | None
     previous_outpoint_amount: int | None
-    signature_script: str
+    signature_script: str | None
     sig_op_count: str
 
     class Config:
