@@ -28,11 +28,17 @@ class CryptixdClient(object):
             return False
 
     async def request(self, command, params=None, timeout=5):
-        with CryptixdThread(self.cryptixd_host, self.cryptixd_port) as t:
+        t = CryptixdThread(self.cryptixd_host, self.cryptixd_port)
+        try:
             return await t.request(
                 command, params, wait_for_response=True, timeout=timeout
             )
+        finally:
+            await t.channel.close()
 
     async def notify(self, command, params, callback):
         t = CryptixdThread(self.cryptixd_host, self.cryptixd_port, async_thread=True)
-        return await t.notify(command, params, callback)
+        try:
+            return await t.notify(command, params, callback)
+        finally:
+            await t.channel.close()
